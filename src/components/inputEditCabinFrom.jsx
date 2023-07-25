@@ -8,24 +8,24 @@ import {
   Grid,
 } from "@mui/material";
 
-export default function labFormDialog({
+export default function cabinFormDialog({
   open,
   handleClose,
 }) {
-  const { handleAddLabFormSubmit } = useGlobalContext();
+  const { handleAddCabinFormSubmit } = useGlobalContext();
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const lab = {
+    const cabin = {
       buildingName: data.get("buildingName"),
-      labName: data.get("labName"),
+      nameOfStaff: data.get("nameOfStaff"),
       floorNumber: data.get("floorNumber"),
       roomNumber: data.get("roomNumber"),
       benchmark: data.get("benchmark"),
     };
 
     handleClose();
-    await handleAddLabFormSubmit(lab);
+    await handleAddCabinFormSubmit(cabin);
   };
 
   return (
@@ -35,11 +35,11 @@ export default function labFormDialog({
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
-                name="labName"
+                name="nameOfStaff"
                 required
                 fullWidth
-                id="labName"
-                label="Lab Name"
+                id="nameOfStaff"
+                label="Staff Name"
                 autoFocus
               />
             </Grid>

@@ -15,7 +15,7 @@ const NavBar = () => {
       }}
     >
       <Typography variant="h5" fontFamily="sans-serif" color="white" m={2}>
-         LOOKING FOR  ...
+      CampusCompass
       </Typography>
       <Box sx={{ flexGrow: 1 }} />
       <ButtonBase onClick={() => alert("hello")}>

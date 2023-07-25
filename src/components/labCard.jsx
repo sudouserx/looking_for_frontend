@@ -9,6 +9,7 @@ import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import FlagIcon from "@mui/icons-material/Flag";
 import { useGlobalContext } from "../context";
+import ReportGmailerrorredIcon from "@mui/icons-material/ReportGmailerrorred";
 
 const LabCard = ({ data }) => {
   const { handleLabReportBtn } = useGlobalContext();
@@ -21,13 +22,10 @@ const LabCard = ({ data }) => {
       elevation={6}
       sx={{
         p: 2,
-        mt: 5,
         mb: 5,
         background: "linear-gradient( 135deg, #5EFCE8 10%, #736EFE 100%)",
       }}
       borderRadius="10px"
-      // border={1}
-      // borderColor={data.isReported ? "red" : "green"}
     >
       <Typography
         variant="h6"
@@ -38,16 +36,16 @@ const LabCard = ({ data }) => {
         {data.labName}
       </Typography>
 
-      <Grid item container spacing={3}>
+      <Grid item container spacing={1.5} justifyContent={"space-around"}>
         <Grid item>
           <Box>
             <Box display="flex" my={2}>
               <CorporateFareIcon sx={{ mr: 1 }} />
-              <Typography variant="body1" fontFamily="serif">
+              <Typography variant="body2" fontFamily="serif">
                 Building
               </Typography>
             </Box>
-            <Typography variant="body1" fontFamily="serif" gutterBottom ml={1}>
+            <Typography variant="subtitle2" fontFamily="serif" ml={1}>
               {data.buildingName}
             </Typography>
           </Box>
@@ -56,11 +54,11 @@ const LabCard = ({ data }) => {
           <Box>
             <Box display="flex" my={2}>
               <StairsIcon sx={{ mr: 1 }} />
-              <Typography variant="body1" fontFamily="serif">
+              <Typography variant="body2" fontFamily="serif">
                 Floor
               </Typography>
             </Box>
-            <Typography variant="body1" fontFamily="serif" gutterBottom ml={1}>
+            <Typography variant="subtitle2" fontFamily="serif" ml={1}>
               {data.floorNumber}
             </Typography>
           </Box>
@@ -69,36 +67,36 @@ const LabCard = ({ data }) => {
           <Box>
             <Box display="flex" my={2}>
               <MeetingRoomIcon sx={{ mr: 1 }} />
-              <Typography variant="body1" fontFamily="serif">
+              <Typography variant="body2" fontFamily="serif">
                 Room no
               </Typography>
             </Box>
-            <Typography variant="body1" fontFamily="serif" gutterBottom ml={1}>
+            <Typography variant="subtitle2" fontFamily="serif" ml={1}>
               {data.roomNumber}
             </Typography>
           </Box>
         </Grid>
       </Grid>
-      <Box>
+      {data.benchmark !== "None" && data.benchmark !== "" && (
         <Box display="flex" my={2}>
           <LocalOfferIcon sx={{ mr: 1 }} />
-          <Typography variant="body1" fontFamily="serif">
-            Benchmark
+          <Typography variant="subtitle2" fontFamily="serif">
+            {data.benchmark}
           </Typography>
         </Box>
-        <Typography variant="body1" fontFamily="serif" gutterBottom ml={1}>
-          {data.benchmark}
-        </Typography>
-      </Box>
+      )}
+
       <Divider sx={{ my: 3 }} />
       {!data.isReported && (
         <Grid item container justifyContent="flex-end">
           <ButtonBase onClick={() => handleLabReportBtn(data._id)}>
-            <FlagIcon />
+            <ReportGmailerrorredIcon />
           </ButtonBase>
         </Grid>
       )}
-      {/* <FormDialog /> */}
+      {/* {data.isReported && (
+        //smth should be here
+      )} */}
     </Box>
   );
 };

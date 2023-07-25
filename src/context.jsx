@@ -55,6 +55,15 @@ const addLab = async (lab) => {
   }
 };
 
+const addCabin = async (cabin) => {
+  try {
+    const { data } = await axios.post(cabinUrl, cabin);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const updateLab = async (lab) => {
   try {
     const { data } = await axios.put(labUrl + `/${lab.id}`, lab);
@@ -66,6 +75,16 @@ const updateLab = async (lab) => {
 const reportLab = async (id) => {
   try {
     const { data } = await axios.patch(labUrl + `/report/${id}`);
+    // refreshPage();
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const reportCabin = async (id) => {
+  try {
+    const { data } = await axios.patch(cabinUrl + `/report/${id}`);
     // refreshPage();
     return data;
   } catch (error) {
@@ -133,11 +152,21 @@ const AppProvider = ({ children }) => {
     const updatedLab = await reportLab(id);
     setLabs(updatedLab);
   };
+  const handleCabinReportBtn = async (id) => {
+    const updatedCabin = await reportCabin(id);
+    setLabs(updatedCabin);
+  };
 
   const handleAddLabFormSubmit = async (lab) => {
     const labs = await addLab(lab);
     if (labs) {
       setLabs(labs);
+    }
+  };
+  const handleAddCabinFormSubmit = async (cabin) => {
+    const cabins = await addCabin(cabin);
+    if (cabins) {
+      setCabins(cabins);
     }
   };
 
@@ -183,9 +212,11 @@ const AppProvider = ({ children }) => {
         labSearchResults,
         handleLabSearchBtn,
         handleLabReportBtn,
+        handleCabinReportBtn,
         handleLabInputChange,
         handleLabSelectResult,
         handleAddLabFormSubmit,
+        handleAddCabinFormSubmit,
       }}
     >
       {children}
