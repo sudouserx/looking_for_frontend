@@ -1,103 +1,117 @@
-import { useState } from "react";
+import React from "react";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
-import { Grid, ButtonBase, Divider, Button, TextField } from "@mui/material";
-import Typography from "@mui/material/Typography";
+import { Grid, ButtonBase, Divider, Typography, Badge } from "@mui/material";
 import CorporateFareIcon from "@mui/icons-material/CorporateFare";
 import StairsIcon from "@mui/icons-material/Stairs";
 import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
-import FlagIcon from "@mui/icons-material/Flag";
-import { useGlobalContext } from "../context";
 import ReportGmailerrorredIcon from "@mui/icons-material/ReportGmailerrorred";
+import { useGlobalContext } from "../context";
 
 const LabCard = ({ data }) => {
   const { handleLabReportBtn } = useGlobalContext();
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      component={Paper}
+    <Paper
       elevation={6}
       sx={{
         p: 2,
-        mb: 5,
-        background: "linear-gradient( 135deg, #5EFCE8 10%, #736EFE 100%)",
+        my: 2,
+        mx: 1,
+        background:
+          "linear-gradient(to right bottom, #f7f8fc, #e2e8f0, #d3dce5, #cad4d5, #cad4d5)", // New background gradient
+        borderRadius: "10px",
       }}
-      borderRadius="10px"
     >
       <Typography
         variant="h6"
         fontFamily="sans-serif"
         fontWeight="bold"
         gutterBottom
+        align="center"
       >
         {data.labName}
       </Typography>
 
-      <Grid item container spacing={1.5} justifyContent={"space-around"}>
-        <Grid item>
-          <Box>
-            <Box display="flex" my={2}>
-              <CorporateFareIcon sx={{ mr: 1 }} />
-              <Typography variant="body2" fontFamily="serif">
-                Building
-              </Typography>
-            </Box>
-            <Typography variant="subtitle2" fontFamily="serif" ml={1}>
+      <Grid container spacing={2} justifyContent="space-between">
+        <Grid item xs={4} sm={4} md={4}>
+          <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            
+          >
+            <CorporateFareIcon fontSize="large" />
+            <Typography variant="body2" fontFamily="serif">
+              Building
+            </Typography>
+            <Typography variant="subtitle2" fontFamily="serif">
               {data.buildingName}
             </Typography>
           </Box>
         </Grid>
-        <Grid item>
-          <Box>
-            <Box display="flex" my={2}>
-              <StairsIcon sx={{ mr: 1 }} />
-              <Typography variant="body2" fontFamily="serif">
-                Floor
-              </Typography>
-            </Box>
-            <Typography variant="subtitle2" fontFamily="serif" ml={1}>
+        <Grid item xs={4} sm={4} md={4}>
+          <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            
+          >
+            <StairsIcon fontSize="large" />
+            <Typography variant="body2" fontFamily="serif">
+              Floor
+            </Typography>
+            <Typography variant="subtitle2" fontFamily="serif">
               {data.floorNumber}
             </Typography>
           </Box>
         </Grid>
-        <Grid item>
-          <Box>
-            <Box display="flex" my={2}>
-              <MeetingRoomIcon sx={{ mr: 1 }} />
-              <Typography variant="body2" fontFamily="serif">
-                Room no
-              </Typography>
-            </Box>
-            <Typography variant="subtitle2" fontFamily="serif" ml={1}>
+        <Grid item xs={4} sm={4} md={4}>
+          <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            
+          >
+            <MeetingRoomIcon fontSize="large" />
+            <Typography variant="body2" fontFamily="serif">
+              Room no
+            </Typography>
+            <Typography variant="subtitle2" fontFamily="serif">
               {data.roomNumber}
             </Typography>
           </Box>
         </Grid>
       </Grid>
+
       {data.benchmark !== "None" && data.benchmark !== "" && (
-        <Box display="flex" my={2}>
-          <LocalOfferIcon sx={{ mr: 1 }} />
-          <Typography variant="subtitle2" fontFamily="serif">
+        <Box display="flex" my={2} justifyContent="center" >
+          <LocalOfferIcon fontSize="large" />
+          <Typography variant="subtitle2" fontFamily="serif" ml={1}>
             {data.benchmark}
           </Typography>
         </Box>
       )}
 
       <Divider sx={{ my: 3 }} />
-      {!data.isReported && (
-        <Grid item container justifyContent="flex-end">
+
+      {data.isReported ? (
+        <Box display="flex" justifyContent="center" >
+          <Badge color="error" badgeContent="Reported">
+            <Typography variant="body2" fontFamily="serif" mt={1}>
+              Reported
+            </Typography>
+          </Badge>
+        </Box>
+      ) : (
+        <Box display="flex" justifyContent="flex-end">
           <ButtonBase onClick={() => handleLabReportBtn(data._id)}>
-            <ReportGmailerrorredIcon />
+            <ReportGmailerrorredIcon fontSize="large" color="error" />
           </ButtonBase>
-        </Grid>
+        </Box>
       )}
-      {/* {data.isReported && (
-        //smth should be here
-      )} */}
-    </Box>
+    </Paper>
   );
 };
 

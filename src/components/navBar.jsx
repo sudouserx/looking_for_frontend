@@ -1,5 +1,7 @@
-import { Box, Typography, Button, Avatar, ButtonBase } from "@mui/material";
+import React from "react";
+import { Box, Typography, ButtonBase, Avatar, IconButton } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import MenuIcon from "@mui/icons-material/Menu"; // Replace with any relevant menu icon
 
 const NavBar = () => {
   return (
@@ -14,17 +16,20 @@ const NavBar = () => {
         borderBottom: "1px solid #e6e6e6",
       }}
     >
-      <Typography variant="h5" fontFamily="sans-serif" color="white" m={2}>
-      CampusCompass
+      {/* Logo or App Name */}
+      <Typography variant="h5" fontFamily="sans-serif" color="white" fontWeight="bold" ml={2}>
+        CampusCompass
       </Typography>
-      <Box sx={{ flexGrow: 1 }} />
-      <ButtonBase onClick={() => alert("hello")}>
-        <MoreVertIcon
-          sx={{
-            color: "white",
-          }}
-        />
-      </ButtonBase>
+
+      {/* Right-side Actions */}
+      <Box sx={{ display: "flex", alignItems: "center" }}>
+        {/* User Avatar (Example: Replace with your user's avatar image) */}
+
+        {/* Replace the onClick function with your actual menu functionality */}
+        <IconButton  sx={{ color: "white" }}>
+          <MenuIcon />
+        </IconButton>
+      </Box>
     </Box>
   );
 };
