@@ -3,11 +3,8 @@ import axios from "axios";
 
 const AppContext = React.createContext();
 
-// const labUrl = `${import.meta.env.VITE_BASE_URL}/labs`;
-// const cabinUrl = `${import.meta.env.VITE_BASE_URL}/cabins`;
-
-const labUrl = `https://lookinfor.azurewebsites.net/api/v1/labs`;
-const cabinUrl = `https://lookinfor.azurewebsites.net/api/v1/cabins`;
+const labUrl = `${import.meta.env.VITE_BASE_URL}/labs`;
+const cabinUrl = `${import.meta.env.VITE_BASE_URL}/cabins`;
 
 function refreshPage() {
   window.location.reload(false);
@@ -84,8 +81,6 @@ const getCabins = async () => {
   }
 };
 
-const labs = await getLabs();
-const cabins = await getCabins();
 // const cabins = await getCabins();
 const AppProvider = ({ children }) => {
   const [Labs, setLabs] = useState([]);
@@ -99,20 +94,39 @@ const AppProvider = ({ children }) => {
 
   const [bottomNavValue, setBottomNavValue] = useState(0);
 
+  // const labs = await getLabs();
+  // const cabins = await getCabins();
+
   useEffect(() => {
-    setLabs(labs);
+    const asyncfunc = async () => {
+      const labs = await getLabs();
+      setLabs(labs);
+    };
+    asyncfunc();
   }, []);
 
   useEffect(() => {
-    setLabs(labs);
+    const asyncfunc = async () => {
+      const labs = await getLabs();
+      setLabs(labs);
+    };
+    asyncfunc();
   }, [reportLab]);
 
   useEffect(() => {
-    setCabins(cabins);
+    const asyncfunc = async () => {
+      const cabins = await getCabins();
+      setCabins(cabins);
+    };
+    asyncfunc();
   }, []);
 
   useEffect(() => {
-    setLabs(labs);
+    const asyncfunc = async () => {
+      const labs = await getLabs();
+      setLabs(labs);
+    };
+    asyncfunc();
   }, [bottomNavValue]);
 
   const handleLabReportBtn = async (id) => {
