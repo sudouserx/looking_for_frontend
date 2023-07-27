@@ -90,6 +90,8 @@ const AppProvider = ({ children }) => {
 
   const [bottomNavValue, setBottomNavValue] = useState(0);
 
+  const [dataChanged, setDataChanged] = useState(false); // Track if new data has been added
+
   const handleLabReportBtn = async (id) => {
     const updatedLab = await reportLab(id);
     setLabs((prevLabs) =>
@@ -107,11 +109,13 @@ const AppProvider = ({ children }) => {
   const handleAddLabFormSubmit = async (lab) => {
     const newLab = await addLab(lab);
     setLabs((prevLabs) => [...prevLabs, newLab]);
+    setDataChanged(true);
   };
 
   const handleAddCabinFormSubmit = async (cabin) => {
     const newCabin = await addCabin(cabin);
     setCabins((prevCabins) => [...prevCabins, newCabin]);
+    setDataChanged(true);
   };
 
   const handleLabInputChange = async (event) => {
@@ -129,9 +133,8 @@ const AppProvider = ({ children }) => {
   const handleLabSelectResult = (labId) => {
     const result = labSearchResults.find((lab) => lab._id === labId);
     if (result) {
-      setLabSearchTerm(result.name); // Set the selected lab's name as the search term
       setLabSearchResults([]);
-      setLabs([result]);
+      setLabs([result]); // Only set the selected lab to the Labs state
     }
   };
 
@@ -149,9 +152,10 @@ const AppProvider = ({ children }) => {
 
   const handleCabinSelectResult = (cabinId) => {
     const result = cabinSearchResults.find((cabin) => cabin._id === cabinId);
-    setCabinSearchTerm(result.name); // Update the search term with the selected cabin's name
-    setCabinSearchResults([]);
-    setCabins([result]);
+    if (result) {
+      setCabinSearchResults([]);
+      setCabins([result]); // Only set the selected cabin to the Cabins state
+    }
   };
 
   useEffect(() => {
@@ -168,23 +172,53 @@ const AppProvider = ({ children }) => {
     };
 
     fetchData();
+    setCabinSearchResults([]); // Reset cabinSearchResults to an empty array
+    setLabSearchResults([]); // Reset labSearchResults to an empty array
   }, [bottomNavValue]);
 
   useEffect(() => {
-    const fetchData = async () => {
+    // Define a function to fetch the new labs and cabins
+    const fetchNewData = async () => {
       try {
-        const labs = await getLabs();
-        setLabs(labs);
+        const newLabs = await getLabs();
+        setLabs(newLabs);
 
-        const cabins = await getCabins();
-        setCabins(cabins);
+        const newCabins = await getCabins();
+        setCabins(newCabins);
+
+        setDataChanged(false); // Reset dataChanged to false after fetching new data
       } catch (error) {
         console.log(error);
       }
     };
 
-    fetchData();
-  }, [Labs, Cabins]);
+    // Call the function after dataChanged is set to true
+    if (dataChanged) {
+      fetchNewData();
+    }
+  }, [dataChanged]);
+
+  useEffect(() => {
+    // Define a function to fetch the labs and cabins when the search term is selected
+    const fetchSearchResults = async () => {
+      try {
+        if (labSearchTerm !== "") {
+          const labs = await getLabByName(labSearchTerm);
+          setLabSearchResults(labs);
+        }
+
+        if (cabinSearchTerm !== "") {
+          const cabins = await getCabinByName(cabinSearchTerm);
+          setCabinSearchResults(cabins);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    // Call the function when the search terms change
+    fetchSearchResults();
+  }, [labSearchTerm, cabinSearchTerm]);
 
   return (
     <AppContext.Provider

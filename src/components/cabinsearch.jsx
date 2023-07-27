@@ -22,7 +22,7 @@ const Cabinsearch = () => {
         position: "sticky",
         top: 0, // Adjust this value if needed, depending on the layout
         zIndex: 999, // Set the z-index to make sure it stays on top of other content
-        backgroundColor: "transparent", // Set the background color of the sticky element
+        backgroundColor: "#fff", // Set the background color of the sticky element
         paddingBottom: 1,
       }}
     >
