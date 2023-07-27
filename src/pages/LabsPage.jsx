@@ -23,7 +23,7 @@ const LabsPage = () => {
     // Simulate fetching labs from an API (remove this in your actual implementation)
     setTimeout(() => {
       setLoading(false);
-    }, 1000);
+    }, 2000);
   }, []);
 
   return (
