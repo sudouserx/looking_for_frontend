@@ -20,8 +20,8 @@ export default function InputEditCabinForm({ open, handleClose }) {
       landmark: data.get("landmark"),
     };
     const formErrors = {};
-    if (!cabin.labName) {
-      formErrors.nameOfStaff = "Cabin Name is required";
+    if (!cabin.nameOfStaff) {
+      formErrors.nameOfStaff = "Name of staff is required";
     }
     if (!cabin.buildingName) {
       formErrors.buildingName = "Building Name is required";
