@@ -1,16 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
-import { Grid, ButtonBase, Divider, Typography, Badge } from "@mui/material";
+import {
+  Grid,
+  ButtonBase,
+  Divider,
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+} from "@mui/material";
 import CorporateFareIcon from "@mui/icons-material/CorporateFare";
 import StairsIcon from "@mui/icons-material/Stairs";
 import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
-import LocalOfferIcon from "@mui/icons-material/LocalOffer";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 import ReportGmailerrorredIcon from "@mui/icons-material/ReportGmailerrorred";
 import { useGlobalContext } from "../context";
 
 const LabCard = ({ data }) => {
   const { handleLabReportBtn } = useGlobalContext();
+  const [openConfirmation, setOpenConfirmation] = useState(false);
+
+  const handleReportClick = () => {
+    setOpenConfirmation(true);
+  };
+
+  const handleConfirmReport = () => {
+    handleLabReportBtn(data._id);
+    setOpenConfirmation(false);
+  };
+
+  const handleCancelReport = () => {
+    setOpenConfirmation(false);
+  };
 
   return (
     <Paper
@@ -19,8 +43,6 @@ const LabCard = ({ data }) => {
         p: 2,
         my: 2,
         mx: 1,
-        background:
-          "linear-gradient(to right bottom, #f7f8fc, #e2e8f0, #d3dce5, #cad4d5, #cad4d5)", // New background gradient
         borderRadius: "10px",
       }}
     >
@@ -34,83 +56,74 @@ const LabCard = ({ data }) => {
         {data.labName}
       </Typography>
 
-      <Grid container spacing={2} justifyContent="space-between">
-        <Grid item xs={4} sm={4} md={4}>
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            
-          >
-            <CorporateFareIcon fontSize="large" />
-            <Typography variant="body2" fontFamily="serif">
-              Building
-            </Typography>
-            <Typography variant="subtitle2" fontFamily="serif">
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Box display="flex" alignItems="center" gap={1}>
+            <CorporateFareIcon fontSize="small" />
+            <Typography variant="body1" fontFamily="serif">
               {data.buildingName}
             </Typography>
           </Box>
         </Grid>
-        <Grid item xs={4} sm={4} md={4}>
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            
-          >
-            <StairsIcon fontSize="large" />
+        <Grid item xs={6}>
+          <Box display="flex" alignItems="center" gap={1}>
+            <StairsIcon fontSize="small" />
             <Typography variant="body2" fontFamily="serif">
-              Floor
-            </Typography>
-            <Typography variant="subtitle2" fontFamily="serif">
-              {data.floorNumber}
+              Floor: {data.floorNumber}
             </Typography>
           </Box>
         </Grid>
-        <Grid item xs={4} sm={4} md={4}>
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            
-          >
-            <MeetingRoomIcon fontSize="large" />
+        <Grid item xs={6}>
+          <Box display="flex" alignItems="center" gap={1}>
+            <MeetingRoomIcon fontSize="small" />
             <Typography variant="body2" fontFamily="serif">
-              Room no
-            </Typography>
-            <Typography variant="subtitle2" fontFamily="serif">
-              {data.roomNumber}
+              Room no: {data.roomNumber}
             </Typography>
           </Box>
         </Grid>
       </Grid>
 
-      {data.benchmark !== "None" && data.benchmark !== "" && (
-        <Box display="flex" my={2} justifyContent="center" >
-          <LocalOfferIcon fontSize="large" />
-          <Typography variant="subtitle2" fontFamily="serif" ml={1}>
-            {data.benchmark}
+      {data.landmark !== "None" && data.landmark !== "" && (
+        <Box display="flex" my={2} alignItems="center" gap={1}>
+          <LocationOnIcon fontSize="small" />
+          <Typography variant="body2" fontFamily="serif">
+            Landmark: {data.landmark}
           </Typography>
         </Box>
       )}
 
-      <Divider sx={{ my: 3 }} />
+      <Divider sx={{ my: 1.5 }} />
 
-      {data.isReported ? (
-        <Box display="flex" justifyContent="center" >
-          <Badge color="error" badgeContent="Reported">
-            <Typography variant="body2" fontFamily="serif" mt={1}>
-              Reported
-            </Typography>
-          </Badge>
-        </Box>
-      ) : (
-        <Box display="flex" justifyContent="flex-end">
-          <ButtonBase onClick={() => handleLabReportBtn(data._id)}>
+      {!data.isReported && (
+        <Box display="flex" justifyContent="flex-start">
+          <ButtonBase onClick={handleReportClick}>
             <ReportGmailerrorredIcon fontSize="large" color="error" />
           </ButtonBase>
         </Box>
       )}
+
+      {/* Confirmation Dialog */}
+      <Dialog
+        open={openConfirmation}
+        onClose={() => setOpenConfirmation(false)}
+      >
+        <DialogTitle>Confirm Report</DialogTitle>
+        <DialogContent>
+          <Typography>Are you sure you want to report this lab?</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelReport} color="primary">
+            Cancel
+          </Button>
+          <Button
+            onClick={handleConfirmReport}
+            color="error"
+            variant="contained"
+          >
+            Report
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Paper>
   );
 };

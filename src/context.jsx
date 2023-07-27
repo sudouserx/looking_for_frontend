@@ -6,13 +6,18 @@ const AppContext = React.createContext();
 const labUrl = `${import.meta.env.VITE_BASE_URL}/labs`;
 const cabinUrl = `${import.meta.env.VITE_BASE_URL}/cabins`;
 
-function refreshPage() {
-  window.location.reload(false);
-}
-
 const getLabByName = async (name) => {
   try {
-    const { data } = await axios.get(labUrl + `/name/${name}`);
+    const { data } = await axios.get(`${labUrl}/name/${name}`); // Verify the URL construction
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const getCabinByName = async (name) => {
+  try {
+    const { data } = await axios.get(`${cabinUrl}/staff/${name}`); // Verify the URL construction
     return data;
   } catch (error) {
     console.log(error);
@@ -21,25 +26,7 @@ const getLabByName = async (name) => {
 
 const getLabs = async () => {
   try {
-    const { data } = await axios.get(labUrl);
-    return data;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-const getLabById = async (id) => {
-  try {
-    const { data } = await axios.get(labUrl + `/${id}`);
-    return data[0];
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-const getReportedLabs = async () => {
-  try {
-    const { data } = await axios.get(labUrl + `/reported`);
+    const { data } = await axios.get(labUrl); // Verify the URL construction
     return data;
   } catch (error) {
     console.log(error);
@@ -48,7 +35,7 @@ const getReportedLabs = async () => {
 
 const addLab = async (lab) => {
   try {
-    const { data } = await axios.post(labUrl, lab);
+    const { data } = await axios.post(labUrl, lab); // Verify the URL construction
     return data;
   } catch (error) {
     console.log(error);
@@ -57,25 +44,16 @@ const addLab = async (lab) => {
 
 const addCabin = async (cabin) => {
   try {
-    const { data } = await axios.post(cabinUrl, cabin);
+    const { data } = await axios.post(cabinUrl, cabin); // Verify the URL construction
     return data;
   } catch (error) {
     console.log(error);
   }
 };
 
-const updateLab = async (lab) => {
-  try {
-    const { data } = await axios.put(labUrl + `/${lab.id}`, lab);
-    return data;
-  } catch (error) {
-    console.log(error);
-  }
-};
 const reportLab = async (id) => {
   try {
-    const { data } = await axios.patch(labUrl + `/report/${id}`);
-    // refreshPage();
+    const { data } = await axios.patch(`${labUrl}/report/${id}`); // Verify the URL construction
     return data;
   } catch (error) {
     console.log(error);
@@ -84,122 +62,129 @@ const reportLab = async (id) => {
 
 const reportCabin = async (id) => {
   try {
-    const { data } = await axios.patch(cabinUrl + `/report/${id}`);
-    // refreshPage();
-    return data;
-  } catch (error) {
-    console.log(error);
-  }
-};
-const getCabins = async () => {
-  try {
-    const { data } = await axios.get(cabinUrl);
+    const { data } = await axios.patch(`${cabinUrl}/report/${id}`); // Verify the URL construction
     return data;
   } catch (error) {
     console.log(error);
   }
 };
 
-// const cabins = await getCabins();
+const getCabins = async () => {
+  try {
+    const { data } = await axios.get(cabinUrl); // Verify the URL construction
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const AppProvider = ({ children }) => {
   const [Labs, setLabs] = useState([]);
   const [Cabins, setCabins] = useState([]);
 
   const [labSearchTerm, setLabSearchTerm] = useState("");
-  // const [cabinSearchTerm, setCabinSearchTerm] = useState("");
+  const [cabinSearchTerm, setCabinSearchTerm] = useState("");
 
   const [labSearchResults, setLabSearchResults] = useState([]);
-  // const [cabinSearchResults, setCabinSearchResults] = useState([]);
+  const [cabinSearchResults, setCabinSearchResults] = useState([]);
 
   const [bottomNavValue, setBottomNavValue] = useState(0);
 
-  // const labs = await getLabs();
-  // const cabins = await getCabins();
-
-  useEffect(() => {
-    const asyncfunc = async () => {
-      const labs = await getLabs();
-      setLabs(labs);
-    };
-    asyncfunc();
-  }, []);
-
-  useEffect(() => {
-    const asyncfunc = async () => {
-      const labs = await getLabs();
-      setLabs(labs);
-    };
-    asyncfunc();
-  }, [reportLab]);
-
-  useEffect(() => {
-    const asyncfunc = async () => {
-      const cabins = await getCabins();
-      setCabins(cabins);
-    };
-    asyncfunc();
-  }, []);
-
-  useEffect(() => {
-    const asyncfunc = async () => {
-      const labs = await getLabs();
-      setLabs(labs);
-    };
-    asyncfunc();
-  }, [bottomNavValue]);
-
   const handleLabReportBtn = async (id) => {
     const updatedLab = await reportLab(id);
-    setLabs(updatedLab);
+    setLabs((prevLabs) =>
+      prevLabs.map((lab) => (lab._id === id ? updatedLab : lab))
+    );
   };
+
   const handleCabinReportBtn = async (id) => {
     const updatedCabin = await reportCabin(id);
-    setLabs(updatedCabin);
+    setCabins((prevCabins) =>
+      prevCabins.map((cabin) => (cabin._id === id ? updatedCabin : cabin))
+    );
   };
 
   const handleAddLabFormSubmit = async (lab) => {
-    const labs = await addLab(lab);
-    if (labs) {
-      setLabs(labs);
-    }
+    const newLab = await addLab(lab);
+    setLabs((prevLabs) => [...prevLabs, newLab]);
   };
+
   const handleAddCabinFormSubmit = async (cabin) => {
-    const cabins = await addCabin(cabin);
-    if (cabins) {
-      setCabins(cabins);
-    }
-  };
-
-  // const handleCabinReportBtn  = async (event) => {
-  //   const cabinId = parseInt(event.currentTarget.value);
-  //   const cabins = await reportLab(cabinId);
-  //   setLabs([cabins]);
-  // };
-
-  const handleLabSearchBtn = () => {
-    setLabs(labSearchResults);
-    setLabSearchResults([]);
+    const newCabin = await addCabin(cabin);
+    setCabins((prevCabins) => [...prevCabins, newCabin]);
   };
 
   const handleLabInputChange = async (event) => {
-    if (event.target.value === "") {
-      setLabSearchResults([]);
-      return;
-    }
     const value = event.target.value;
     setLabSearchTerm(value);
 
-    // Perform search and update labSearchResults state
-    const labs = await getLabByName(value);
-    setLabSearchResults(labs);
+    if (value === "") {
+      setLabSearchResults([]);
+    } else {
+      const labs = await getLabByName(value);
+      setLabSearchResults(labs);
+    }
   };
 
   const handleLabSelectResult = (labId) => {
     const result = labSearchResults.find((lab) => lab._id === labId);
-    setLabSearchTerm(result);
-    setLabSearchResults([]);
-    setLabs([result]);
+    if (result) {
+      setLabSearchTerm(result.name); // Set the selected lab's name as the search term
+      setLabSearchResults([]);
+      setLabs([result]);
+    }
   };
+
+  const handleCabinInputChange = async (event) => {
+    const value = event.target.value;
+    setCabinSearchTerm(value);
+
+    if (value === "") {
+      setCabinSearchResults([]);
+    } else {
+      const cabins = await getCabinByName(value);
+      setCabinSearchResults(cabins);
+    }
+  };
+
+  const handleCabinSelectResult = (cabinId) => {
+    const result = cabinSearchResults.find((cabin) => cabin._id === cabinId);
+    setCabinSearchTerm(result.name); // Update the search term with the selected cabin's name
+    setCabinSearchResults([]);
+    setCabins([result]);
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const labs = await getLabs();
+        setLabs(labs);
+
+        const cabins = await getCabins();
+        setCabins(cabins);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  }, [bottomNavValue]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const labs = await getLabs();
+        setLabs(labs);
+
+        const cabins = await getCabins();
+        setCabins(cabins);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  }, [Labs, Cabins]);
 
   return (
     <AppContext.Provider
@@ -209,14 +194,17 @@ const AppProvider = ({ children }) => {
         bottomNavValue,
         setBottomNavValue,
         labSearchTerm,
+        cabinSearchTerm,
         labSearchResults,
-        handleLabSearchBtn,
+        cabinSearchResults,
         handleLabReportBtn,
         handleCabinReportBtn,
         handleLabInputChange,
         handleLabSelectResult,
         handleAddLabFormSubmit,
         handleAddCabinFormSubmit,
+        handleCabinInputChange,
+        handleCabinSelectResult,
       }}
     >
       {children}

@@ -3,29 +3,44 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import { useGlobalContext } from "../context";
-import {
-  Box,
-  Grid,
-} from "@mui/material";
+import { Box, Grid } from "@mui/material";
 
-export default function cabinFormDialog({
-  open,
-  handleClose,
-}) {
+export default function InputEditCabinForm({ open, handleClose }) {
   const { handleAddCabinFormSubmit } = useGlobalContext();
+  const [errors, setErrors] = React.useState({});
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const cabin = {
-      buildingName: data.get("buildingName"),
       nameOfStaff: data.get("nameOfStaff"),
+      buildingName: data.get("buildingName"),
       floorNumber: data.get("floorNumber"),
       roomNumber: data.get("roomNumber"),
-      benchmark: data.get("benchmark"),
+      landmark: data.get("landmark"),
     };
+    const formErrors = {};
+    if (!cabin.labName) {
+      formErrors.nameOfStaff = "Cabin Name is required";
+    }
+    if (!cabin.buildingName) {
+      formErrors.buildingName = "Building Name is required";
+    }
+    if (!cabin.floorNumber) {
+      formErrors.floorNumber = "Floor Number is required";
+    }
+    if (!cabin.roomNumber) {
+      formErrors.roomNumber = "Room Number is required";
+    }
 
-    handleClose();
-    await handleAddCabinFormSubmit(cabin);
+    if (Object.keys(formErrors).length > 0) {
+      // Set errors and prevent form submission
+      setErrors(formErrors);
+    } else {
+      // All required fields are filled, proceed with form submission
+      handleClose();
+      await handleAddCabinFormSubmit(cabin);
+    }
   };
 
   return (
@@ -41,6 +56,8 @@ export default function cabinFormDialog({
                 id="nameOfStaff"
                 label="Staff Name"
                 autoFocus
+                error={!!errors.nameOfStaff}
+                helperText={errors.nameOfStaff}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -50,6 +67,8 @@ export default function cabinFormDialog({
                 id="buildingName"
                 label="Building Name"
                 name="buildingName"
+                error={!!errors.buildingName}
+                helperText={errors.buildingName}
               />
             </Grid>
             <Grid item xs={12}>
@@ -60,6 +79,8 @@ export default function cabinFormDialog({
                 label="Floor Number"
                 name="floorNumber"
                 type="number"
+                error={!!errors.floorNumber}
+                helperText={errors.floorNumber}
               />
             </Grid>
             <Grid item xs={12}>
@@ -70,15 +91,16 @@ export default function cabinFormDialog({
                 label="Room Number"
                 id="roomNumber"
                 type="number"
+                error={!!errors.roomNumber}
+                helperText={errors.roomNumber}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                name="benchmark"
-                label="Benchmark"
-                id="benchmark"
-                placeholder="If applicable"
+                name="landmark"
+                label="Landmark (If applicable)"
+                id="landmark"
               />
             </Grid>
           </Grid>
@@ -88,7 +110,7 @@ export default function cabinFormDialog({
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            Contribute
+            Submit
           </Button>
         </Box>
       </Dialog>
