@@ -3,35 +3,33 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import { useGlobalContext } from "../context";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 
-export default function LabFormDialog({ open, handleClose }) {
-  const { handleAddLabFormSubmit } = useGlobalContext();
+export default function InputEditCabinForm({ open, handleClose }) {
+  const { handleAddCabinFormSubmit } = useGlobalContext();
   const [errors, setErrors] = React.useState({});
-  
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const lab = {
+    const cabin = {
+      nameOfStaff: data.get("nameOfStaff"),
       buildingName: data.get("buildingName"),
-      labName: data.get("labName"),
       floorNumber: data.get("floorNumber"),
       roomNumber: data.get("roomNumber"),
       landmark: data.get("landmark"),
     };
-
-    // Validate required fields
     const formErrors = {};
-    if (!lab.labName) {
-      formErrors.labName = "Lab Name is required";
+    if (!cabin.labName) {
+      formErrors.nameOfStaff = "Cabin Name is required";
     }
-    if (!lab.buildingName) {
+    if (!cabin.buildingName) {
       formErrors.buildingName = "Building Name is required";
     }
-    if (!lab.floorNumber) {
+    if (!cabin.floorNumber) {
       formErrors.floorNumber = "Floor Number is required";
     }
-    if (!lab.roomNumber) {
+    if (!cabin.roomNumber) {
       formErrors.roomNumber = "Room Number is required";
     }
 
@@ -41,7 +39,7 @@ export default function LabFormDialog({ open, handleClose }) {
     } else {
       // All required fields are filled, proceed with form submission
       handleClose();
-      await handleAddLabFormSubmit(lab);
+      await handleAddCabinFormSubmit(cabin);
     }
   };
 
@@ -52,14 +50,14 @@ export default function LabFormDialog({ open, handleClose }) {
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
-                name="labName"
+                name="nameOfStaff"
                 required
                 fullWidth
-                id="labName"
-                label="Lab Name"
+                id="nameOfStaff"
+                label="Staff Name"
                 autoFocus
-                error={!!errors.labName}
-                helperText={errors.labName}
+                error={!!errors.nameOfStaff}
+                helperText={errors.nameOfStaff}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
