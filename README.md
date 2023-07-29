@@ -2,6 +2,22 @@
 
 Welcome to CampusCompass! This is a web application designed to help users navigate and find important locations on the campus of Hindustan University. The project consists of both frontend and backend code.
 
+<table>
+  <tr>
+    <td>
+      <img src="https://github-production-user-asset-6210df.s3.amazonaws.com/118109563/256972192-36bddb10-4211-40e0-99e6-83b35913e661.png" alt="Labs Tab">
+    </td>
+    <td>
+      <img src="https://github-production-user-asset-6210df.s3.amazonaws.com/118109563/256972179-0fb8fb7a-2612-4fee-b833-dd9f8f69f7fa.png" alt="Cabins Tab">
+    </td>
+    <td>
+      <img src="https://github-production-user-asset-6210df.s3.amazonaws.com/118109563/256972186-1507ebd6-86e3-4df4-80c1-27a5a63591b9.png" alt="More Drawer">
+    </td>
+  </tr>
+</table>
+
+
+
 ## Frontend
 
 The frontend code for CampusCompass can be found [here](https://looking-for-frontend.vercel.app/). It provides a user-friendly interface where users can interact with the campus map, search for labs and cabins, and view important details about each location.
