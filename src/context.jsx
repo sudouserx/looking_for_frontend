@@ -12,7 +12,7 @@ function refreshPage() {
 
 const getLabByName = async (name) => {
   try {
-    const { data } = await axios.get(labUrl + `/name/${name}`);
+    const { data } = await axios.get(`${labUrl}/name/${name}`); 
     return data;
   } catch (error) {
     console.log(error);
@@ -21,7 +21,7 @@ const getLabByName = async (name) => {
 
 const getLabs = async () => {
   try {
-    const { data } = await axios.get(labUrl);
+    const { data } = await axios.get(`${cabinUrl}/staff/${name}`); 
     return data;
   } catch (error) {
     console.log(error);
@@ -30,8 +30,8 @@ const getLabs = async () => {
 
 const getLabById = async (id) => {
   try {
-    const { data } = await axios.get(labUrl + `/${id}`);
-    return data[0];
+    const { data } = await axios.get(labUrl); // Verify the URL construction
+    return data;
   } catch (error) {
     console.log(error);
   }
@@ -39,7 +39,7 @@ const getLabById = async (id) => {
 
 const getReportedLabs = async () => {
   try {
-    const { data } = await axios.get(labUrl + `/reported`);
+    const { data } = await axios.post(labUrl, lab); // Verify the URL construction
     return data;
   } catch (error) {
     console.log(error);
@@ -48,7 +48,7 @@ const getReportedLabs = async () => {
 
 const addLab = async (lab) => {
   try {
-    const { data } = await axios.post(labUrl, lab);
+    const { data } = await axios.post(cabinUrl, cabin); // Verify the URL construction
     return data;
   } catch (error) {
     console.log(error);
@@ -57,7 +57,7 @@ const addLab = async (lab) => {
 
 const updateLab = async (lab) => {
   try {
-    const { data } = await axios.put(labUrl + `/${lab.id}`, lab);
+    const { data } = await axios.patch(`${labUrl}/report/${id}`); // Verify the URL construction
     return data;
   } catch (error) {
     console.log(error);
@@ -65,8 +65,7 @@ const updateLab = async (lab) => {
 };
 const reportLab = async (id) => {
   try {
-    const { data } = await axios.patch(labUrl + `/report/${id}`);
-    // refreshPage();
+    const { data } = await axios.patch(`${cabinUrl}/report/${id}`); // Verify the URL construction
     return data;
   } catch (error) {
     console.log(error);
@@ -74,7 +73,7 @@ const reportLab = async (id) => {
 };
 const getCabins = async () => {
   try {
-    const { data } = await axios.get(cabinUrl);
+    const { data } = await axios.get(cabinUrl); // Verify the URL construction
     return data;
   } catch (error) {
     console.log(error);
@@ -83,6 +82,9 @@ const getCabins = async () => {
 
 // const cabins = await getCabins();
 const AppProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
+
   const [Labs, setLabs] = useState([]);
   const [Cabins, setCabins] = useState([]);
 
@@ -94,40 +96,7 @@ const AppProvider = ({ children }) => {
 
   const [bottomNavValue, setBottomNavValue] = useState(0);
 
-  // const labs = await getLabs();
-  // const cabins = await getCabins();
-
-  useEffect(() => {
-    const asyncfunc = async () => {
-      const labs = await getLabs();
-      setLabs(labs);
-    };
-    asyncfunc();
-  }, []);
-
-  useEffect(() => {
-    const asyncfunc = async () => {
-      const labs = await getLabs();
-      setLabs(labs);
-    };
-    asyncfunc();
-  }, [reportLab]);
-
-  useEffect(() => {
-    const asyncfunc = async () => {
-      const cabins = await getCabins();
-      setCabins(cabins);
-    };
-    asyncfunc();
-  }, []);
-
-  useEffect(() => {
-    const asyncfunc = async () => {
-      const labs = await getLabs();
-      setLabs(labs);
-    };
-    asyncfunc();
-  }, [bottomNavValue]);
+  const [dataChanged, setDataChanged] = useState(false); // Track if new data has been added
 
   const handleLabReportBtn = async (id) => {
     const updatedLab = await reportLab(id);
@@ -167,14 +136,99 @@ const AppProvider = ({ children }) => {
 
   const handleLabSelectResult = (labId) => {
     const result = labSearchResults.find((lab) => lab._id === labId);
-    setLabSearchTerm(result);
-    setLabSearchResults([]);
-    setLabs([result]);
+    if (result) {
+      setLabSearchResults([]);
+      setLabs([result]); // Only set the selected lab to the Labs state
+    }
   };
+
+  const handleCabinInputChange = async (event) => {
+    const value = event.target.value;
+    setCabinSearchTerm(value);
+
+    if (value === "") {
+      setCabinSearchResults([]);
+    } else {
+      const cabins = await getCabinByName(value);
+      setCabinSearchResults(cabins);
+    }
+  };
+
+  const handleCabinSelectResult = (cabinId) => {
+    const result = cabinSearchResults.find((cabin) => cabin._id === cabinId);
+    if (result) {
+      setCabinSearchResults([]);
+      setCabins([result]); // Only set the selected cabin to the Cabins state
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const labs = await getLabs();
+        setLabs(labs);
+
+        const cabins = await getCabins();
+        setCabins(cabins);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
+    setCabinSearchResults([]); // Reset cabinSearchResults to an empty array
+    setLabSearchResults([]); // Reset labSearchResults to an empty array
+  }, [bottomNavValue]);
+
+  useEffect(() => {
+    // Define a function to fetch the new labs and cabins
+    const fetchNewData = async () => {
+      try {
+        const newLabs = await getLabs();
+        setLabs(newLabs);
+
+        const newCabins = await getCabins();
+        setCabins(newCabins);
+
+        setDataChanged(false); // Reset dataChanged to false after fetching new data
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    // Call the function after dataChanged is set to true
+    if (dataChanged) {
+      fetchNewData();
+    }
+  }, [dataChanged]);
+
+  useEffect(() => {
+    // Define a function to fetch the labs and cabins when the search term is selected
+    const fetchSearchResults = async () => {
+      try {
+        if (labSearchTerm !== "") {
+          const labs = await getLabByName(labSearchTerm);
+          setLabSearchResults(labs);
+        }
+
+        if (cabinSearchTerm !== "") {
+          const cabins = await getCabinByName(cabinSearchTerm);
+          setCabinSearchResults(cabins);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    // Call the function when the search terms change
+    fetchSearchResults();
+  }, [labSearchTerm, cabinSearchTerm]);
 
   return (
     <AppContext.Provider
       value={{
+        user,
+        token,
         Labs,
         Cabins,
         bottomNavValue,
@@ -186,6 +240,9 @@ const AppProvider = ({ children }) => {
         handleLabInputChange,
         handleLabSelectResult,
         handleAddLabFormSubmit,
+        handleAddCabinFormSubmit,
+        handleCabinInputChange,
+        handleCabinSelectResult,
       }}
     >
       {children}
@@ -193,10 +250,8 @@ const AppProvider = ({ children }) => {
   );
 };
 
-// using custom hook
 export const useGlobalContext = () => {
   return useContext(AppContext);
 };
 
-//  children : special pprop , refers to entire application component
 export { AppContext, AppProvider };
