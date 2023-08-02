@@ -6,6 +6,7 @@ const AppContext = React.createContext();
 const labUrl = `${import.meta.env.VITE_BASE_URL}/labs`;
 const cabinUrl = `${import.meta.env.VITE_BASE_URL}/cabins`;
 
+//
 const getLabByName = async (name) => {
   try {
     const { data } = await axios.get(`${labUrl}/name/${name}`); // Verify the URL construction
