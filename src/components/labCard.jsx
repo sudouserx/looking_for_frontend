@@ -94,13 +94,13 @@ const LabCard = ({ data }) => {
 
       <Divider sx={{ my: 1.5 }} />
 
-      {!data.isReported && (
+      {/* {!data.isReported && (
         <Box display="flex" justifyContent="flex-start">
           <ButtonBase onClick={handleReportClick}>
             <ReportGmailerrorredIcon fontSize="large" color="error" />
           </ButtonBase>
         </Box>
-      )}
+      )} */}
 
       {/* Confirmation Dialog */}
       <Dialog
