@@ -56,7 +56,7 @@ const CabinsPage = () => {
       )}
       {/* Floating Action Button */}
       <Fab
-        color="primary"
+        color="secondary"
         aria-label="add"
         onClick={handleOpenFormDialog}
         sx={{
