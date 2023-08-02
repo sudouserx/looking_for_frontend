@@ -6,12 +6,9 @@ const AppContext = React.createContext();
 const labUrl = `${import.meta.env.VITE_BASE_URL}/labs`;
 const cabinUrl = `${import.meta.env.VITE_BASE_URL}/cabins`;
 
-function refreshPage() {
-  window.location.reload(false);
-}
-
 const getLabByName = async (name) => {
   try {
+    const { data } = await axios.get(`${labUrl}/name/${name}`); // Verify the URL construction
     const { data } = await axios.get(`${labUrl}/name/${name}`); 
     return data;
   } catch (error) {
@@ -21,7 +18,7 @@ const getLabByName = async (name) => {
 
 const getLabs = async () => {
   try {
-    const { data } = await axios.get(`${cabinUrl}/staff/${name}`); 
+    const { data } = await axios.get(labUrl);
     return data;
   } catch (error) {
     console.log(error);
@@ -57,7 +54,7 @@ const addLab = async (lab) => {
 
 const updateLab = async (lab) => {
   try {
-    const { data } = await axios.patch(`${labUrl}/report/${id}`); // Verify the URL construction
+    const { data } = await axios.put(labUrl + `/${lab.id}`, lab);
     return data;
   } catch (error) {
     console.log(error);
@@ -80,7 +77,6 @@ const getCabins = async () => {
   }
 };
 
-// const cabins = await getCabins();
 const AppProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
@@ -89,10 +85,10 @@ const AppProvider = ({ children }) => {
   const [Cabins, setCabins] = useState([]);
 
   const [labSearchTerm, setLabSearchTerm] = useState("");
-  // const [cabinSearchTerm, setCabinSearchTerm] = useState("");
+  const [cabinSearchTerm, setCabinSearchTerm] = useState("");
 
   const [labSearchResults, setLabSearchResults] = useState([]);
-  // const [cabinSearchResults, setCabinSearchResults] = useState([]);
+  const [cabinSearchResults, setCabinSearchResults] = useState([]);
 
   const [bottomNavValue, setBottomNavValue] = useState(0);
 
@@ -100,38 +96,40 @@ const AppProvider = ({ children }) => {
 
   const handleLabReportBtn = async (id) => {
     const updatedLab = await reportLab(id);
-    setLabs(updatedLab);
+    setLabs((prevLabs) =>
+      prevLabs.map((lab) => (lab._id === id ? updatedLab : lab))
+    );
+  };
+
+  const handleCabinReportBtn = async (id) => {
+    const updatedCabin = await reportCabin(id);
+    setCabins((prevCabins) =>
+      prevCabins.map((cabin) => (cabin._id === id ? updatedCabin : cabin))
+    );
   };
 
   const handleAddLabFormSubmit = async (lab) => {
-    const labs = await addLab(lab);
-    if (labs) {
-      setLabs(labs);
-    }
+    const newLab = await addLab(lab);
+    setLabs((prevLabs) => [...prevLabs, newLab]);
+    setDataChanged(true);
   };
 
-  // const handleCabinReportBtn  = async (event) => {
-  //   const cabinId = parseInt(event.currentTarget.value);
-  //   const cabins = await reportLab(cabinId);
-  //   setLabs([cabins]);
-  // };
-
-  const handleLabSearchBtn = () => {
-    setLabs(labSearchResults);
-    setLabSearchResults([]);
+  const handleAddCabinFormSubmit = async (cabin) => {
+    const newCabin = await addCabin(cabin);
+    setCabins((prevCabins) => [...prevCabins, newCabin]);
+    setDataChanged(true);
   };
 
   const handleLabInputChange = async (event) => {
-    if (event.target.value === "") {
-      setLabSearchResults([]);
-      return;
-    }
     const value = event.target.value;
     setLabSearchTerm(value);
 
-    // Perform search and update labSearchResults state
-    const labs = await getLabByName(value);
-    setLabSearchResults(labs);
+    if (value === "") {
+      setLabSearchResults([]);
+    } else {
+      const labs = await getLabByName(value);
+      setLabSearchResults(labs);
+    }
   };
 
   const handleLabSelectResult = (labId) => {
@@ -234,9 +232,11 @@ const AppProvider = ({ children }) => {
         bottomNavValue,
         setBottomNavValue,
         labSearchTerm,
+        cabinSearchTerm,
         labSearchResults,
-        handleLabSearchBtn,
+        cabinSearchResults,
         handleLabReportBtn,
+        handleCabinReportBtn,
         handleLabInputChange,
         handleLabSelectResult,
         handleAddLabFormSubmit,
