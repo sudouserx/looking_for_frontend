@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import HomePage from "./pages/HomePage";
-import Signin from "./pages/Signin";
-import Signup from "./pages/Signup";
 import Splash from "./components/Splash"; // Import the Splash component
 
 function App() {
