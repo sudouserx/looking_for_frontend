@@ -90,7 +90,6 @@ export default function InputEditCabinForm({ open, handleClose }) {
                 name="roomNumber"
                 label="Room Number"
                 id="roomNumber"
-                type="number"
                 error={!!errors.roomNumber}
                 helperText={errors.roomNumber}
               />
