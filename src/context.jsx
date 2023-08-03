@@ -45,6 +45,15 @@ const getReportedLabs = async () => {
 
 const addLab = async (lab) => {
   try {
+    const { data } = await axios.post(labUrl, lab); // Verify the URL construction
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const addCabin = async (cabin) => {
+  try {
     const { data } = await axios.post(cabinUrl, cabin); // Verify the URL construction
     return data;
   } catch (error) {
@@ -109,14 +118,15 @@ const AppProvider = ({ children }) => {
   };
 
   const handleAddLabFormSubmit = async (lab) => {
+    console.log(lab);
     const newLab = await addLab(lab);
-    setLabs((prevLabs) => [...prevLabs, newLab]);
+    setLabs(newLab);
     setDataChanged(true);
   };
 
   const handleAddCabinFormSubmit = async (cabin) => {
     const newCabin = await addCabin(cabin);
-    setCabins((prevCabins) => [...prevCabins, newCabin]);
+    setCabins(newCabin);
     setDataChanged(true);
   };
 

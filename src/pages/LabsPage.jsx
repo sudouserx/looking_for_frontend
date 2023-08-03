@@ -67,8 +67,7 @@ const LabsPage = () => {
       >
         <AddIcon />
       </Fab>
-      <FormDialog open={open} handleClose={handleCloseFormDialog} />{" "}
-      {/* Renamed handleClose and added onSuccess prop */}
+      <FormDialog open={open} handleClose={handleCloseFormDialog} />
     </Box>
   );
 };
