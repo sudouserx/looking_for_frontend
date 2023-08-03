@@ -92,7 +92,6 @@ export default function LabFormDialog({ open, handleClose }) {
                 name="roomNumber"
                 label="Room Number"
                 id="roomNumber"
-                type="number"
                 error={!!errors.roomNumber}
                 helperText={errors.roomNumber}
               />
